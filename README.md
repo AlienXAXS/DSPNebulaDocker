@@ -10,7 +10,19 @@ I am no way a Docker expert or know how to use Wine. I cobbled together this scr
 4. Once the server install process is finished go to the Settings tab for your server and connect using SCP (WinSCP is what i use), create a directory called "game"
 5. Upload the whole of your DSP Headless Client directory here.
 6. Go back to the root directory and copy your "Dyson Sphere Program" folder from your Documents to this root directory.
+7. Start the server
 
 It should look like this:
 
 ![image](https://user-images.githubusercontent.com/1773445/201533782-3f4792a8-e614-45fb-9803-11f237bb40df.png)
+
+# Things I've Tested:
+- Saving/Loading works
+- Building works well
+- Deconstructing works
+- Interplanetry travel works
+- Logistic Bots / Logstic Vessles and Inter-Planetary Vessles all work
+
+# Current Issues:
+- Some BepInEx logs do not make it to the console screen, investigating this.
+- The console is constantly bombarded with .NET errors which I am not too sure how to fix.
