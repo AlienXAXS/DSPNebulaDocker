@@ -26,3 +26,6 @@ It should look like this:
 # Current Issues:
 - Some BepInEx logs do not make it to the console screen, investigating this.
 - The console is constantly bombarded with .NET errors which I am not too sure how to fix.
+
+# Want to help?
+As said I am lacking knowledge here, if you want to help and have knowledge of Wine, Winetricks and DotNet/Mono installs within Wine you can find me on the [Nebula Discord](https://discord.gg/UHeB2QvgDa) under "AlienX"
