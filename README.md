@@ -12,4 +12,5 @@ I am no way a Docker expert or know how to use Wine. I cobbled together this scr
 6. Go back to the root directory and copy your "Dyson Sphere Program" folder from your Documents to this root directory.
 
 It should look like this:
+
 ![image](https://user-images.githubusercontent.com/1773445/201533782-3f4792a8-e614-45fb-9803-11f237bb40df.png)
