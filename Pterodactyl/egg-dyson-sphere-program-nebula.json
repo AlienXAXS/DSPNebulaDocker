@@ -1,0 +1,31 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2022-11-13T16:46:32+00:00",
+    "name": "Dyson Sphere Program Nebula",
+    "author": "mark.phillips@axsemail.co.uk",
+    "description": null,
+    "features": null,
+    "docker_images": {
+        "quay.io\/parkervcp\/pterodactyl-images:debian_wine-5": "quay.io\/parkervcp\/pterodactyl-images:debian_wine-5"
+    },
+    "file_denylist": [],
+    "startup": "cd \/home\/container\/game\/; WINEDLLOVERRIDES=\"winhttp=n,b\" wine \/home\/container\/game\/DSPGame.exe -batchmode -nographics -server -load-latest",
+    "config": {
+        "files": "{}",
+        "startup": "{\r\n    \"done\": \"Game load completed\"\r\n}",
+        "logs": "{}",
+        "stop": "^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/bash\r\n# Installation Script\r\n#\r\n## Define variables\r\nexport HOME=\/mnt\/server\r\n\r\n## Install dependencies\r\ndpkg --add-architecture i386\r\napt update\r\napt -y --no-install-recommends install curl unzip libstdc++6 lib32gcc1 ca-certificates libsdl2-2.0-0:i386 cabextract\r\napt install -y --install-recommends wine wine64 xvfb\r\n\r\n## Install WineTricks\r\nexport DISPLAY=:0.0\r\nexport WINEPREFIX=$HOME\/.wine\r\nrm -r $HOME\/.wine\r\nrm -r $HOME\/.cache\r\nmkdir -p $HOME\/.wine\r\nmkdir \/tmp\/winetricks\r\ncurl https:\/\/raw.githubusercontent.com\/Winetricks\/winetricks\/master\/src\/winetricks -o \/tmp\/winetricks\/winetricks\r\nchmod +x \/tmp\/winetricks\/winetricks\r\nXvfb :0 -screen 0 1024x768x16 &\r\n#env WINEDLLOVERRIDES=\"mscoree=d;mshtml=d;winhttp=n,b\" wineboot --init --force \/nogui\r\nenv WINEDLLOVERRIDES=\"mscoree;mshtml=\" xvfb-run wine wineboot --init --force \/nogui && xvfb-run wineserver -w\r\nenv \/tmp\/winetricks\/winetricks -q vcrun2017\r\nenv \/tmp\/winetricks\/winetricks -q vcrun2013\r\nenv \/tmp\/winetricks\/winetricks -q sound=disabled\r\nenv \/tmp\/winetricks\/winetricks -q corefonts\r\n#env \/tmp\/winetricks\/winetricks -q --force dotnet48\r\n#env \/tmp\/winetricks\/winetricks -q --force dotnet472\r\nenv \/tmp\/winetricks\/winetricks -q --force dotnet45",
+            "container": "debian:buster-slim",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": []
+}

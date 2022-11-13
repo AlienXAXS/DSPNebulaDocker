@@ -1,0 +1,1 @@
+cd /home/container/game/; WINEDLLOVERRIDES="winhttp=n,b" wine /home/container/game/DSPGame.exe -batchmode -nographics -server -load-latest
