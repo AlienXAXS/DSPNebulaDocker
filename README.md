@@ -7,10 +7,9 @@ I am no way a Docker expert or know how to use Wine. I cobbled together this scr
 1. You first need to import the egg into your Pter Install using the Nests area
 2. Install a new server using the new egg you have just imported
 3. Wait for the server setup to complete, this can take a long time.
-4. Once the server install process is finished go to the Settings tab for your server and connect using SCP (WinSCP is what i use), create a directory called "game"
-5. Upload the whole of your DSP Headless Client directory here. (This is also a good time to change the HostPort in nebula.cfg to match Pter's port it gave you)
-6. Go back to the root directory and copy your "Dyson Sphere Program" folder from your Documents to this root directory.
-7. Start the server
+4. Start the server once, then stop it so it creates the Dyson Sphere Program directory
+5. Upload your saves to the "Dyson Sphere Program" folder
+6. Start the server
 
 It should look like this:
 
