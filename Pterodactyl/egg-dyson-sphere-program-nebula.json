@@ -4,12 +4,13 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2022-11-15T02:27:33+00:00",
+    "exported_at": "2022-11-15T20:52:37+00:00",
     "name": "Dyson Sphere Program Nebula",
     "author": "mark.phillips@axsemail.co.uk",
     "description": null,
     "features": null,
     "docker_images": {
+        "Proton Docker Image": "alienxaxs\/pterodactyl-proton-wine:v1",
         "Wine Docker Image": "ghcr.io\/parkervcp\/yolks:wine_staging"
     },
     "file_denylist": [],
@@ -55,7 +56,7 @@
             "default_value": "",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|password|max:30",
+            "rules": "required|string|max:30",
             "field_type": "text"
         },
         {
@@ -95,7 +96,7 @@
             "default_value": "",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string|max:256",
+            "rules": "nullable|string|max:256",
             "field_type": "text"
         }
     ]
