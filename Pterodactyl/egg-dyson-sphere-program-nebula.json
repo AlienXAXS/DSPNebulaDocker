@@ -4,14 +4,13 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2022-11-14T22:42:36+00:00",
+    "exported_at": "2022-11-15T02:27:33+00:00",
     "name": "Dyson Sphere Program Nebula",
     "author": "mark.phillips@axsemail.co.uk",
     "description": null,
     "features": null,
     "docker_images": {
-        "New Wine": "ghcr.io\/parkervcp\/yolks:wine_staging",
-        "Previous Wine": "quay.io\/parkervcp\/pterodactyl-images:debian_wine-5"
+        "Wine Docker Image": "ghcr.io\/parkervcp\/yolks:wine_staging"
     },
     "file_denylist": [],
     "startup": "winetricks sound=disabled; export WINEARCH=\"win64\"; WINEDLLOVERRIDES=\"mscoree=n,b;mshtml=n,b;winhttp=n,b\"; wine \/home\/container\/DSPGame.exe -batchmode -nographics -server -load-latest",
@@ -23,7 +22,7 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/bash\r\n# Installation Script\r\n# Created by AlienX\r\n## Define variables\r\nexport HOME=\/mnt\/server\r\nBEPINEX_PLUGINS=(\"nebula\/NebulaMultiplayerMod\" \"nebula\/NebulaMultiplayerModApi\" \"PhantomGamers\/IlLine\" \"CommonAPI\/CommonAPI\" \"starfi5h\/BulletTime\" \"xiaoye97\/LDBTool\" \"CommonAPI\/DSPModSave\")\r\n\r\n## download and install steamcmd\r\ncd \/tmp\r\nmkdir -p $HOME\/steamcmd\r\ncurl -sSL -o steamcmd.tar.gz https:\/\/steamcdn-a.akamaihd.net\/client\/installer\/steamcmd_linux.tar.gz\r\ntar -xzvf steamcmd.tar.gz -C $HOME\/steamcmd\r\nmkdir -p $HOME\/steamapps # Fix steamcmd disk write error when this folder is missing\r\ncd $HOME\/steamcmd\r\n\r\n# SteamCMD fails otherwise for some reason, even running as root.\r\n# This is changed at the end of the install process anyways.\r\nchown -R root:root \/mnt\r\n\r\n## install game using steamcmd\r\n.\/steamcmd.sh +force_install_dir $HOME +login ${STEAM_USER} ${STEAM_PASS} ${STEAM_AUTH} +@sSteamCmdForcePlatformType windows +app_update ${SRCDS_APPID} validate +quit\r\n\r\n## set up 32 bit libraries\r\nmkdir -p $HOME\/.steam\/sdk32\r\ncp -v linux32\/steamclient.so ..\/.steam\/sdk32\/steamclient.so\r\n\r\n## set up 64 bit libraries\r\nmkdir -p $HOME\/.steam\/sdk64\r\ncp -v linux64\/steamclient.so ..\/.steam\/sdk64\/steamclient.so\r\ncd $HOME\r\n\r\n## Install BepInEx from GitHub\r\nLATEST_JSON=$(curl --silent \"https:\/\/api.github.com\/repos\/BepInEx\/BepInEx\/releases\/latest\")\r\nDOWNLOAD_LINK=$(echo ${LATEST_JSON} | jq .assets | jq -r .[].browser_download_url | grep -i x64)\r\nFILE_NAME=$(echo \"${DOWNLOAD_LINK##*\/}\")\r\necho \"## Attempting to download BepInEx from $DOWNLOAD_LINK\"\r\ncurl -OL $DOWNLOAD_LINK > \/dev\/null\r\necho \"## Installing BepInEx\"\r\nunzip -o \".\/$FILE_NAME\" > \/dev\/null\r\necho \"##   -> Done\"\r\nrm -fR $FILE_NAME\r\nmkdir -p $HOME\/BepInEx\/plugins\r\nmkdir -p $HOME\/BepInEx\/patchers\r\n\r\n#Download Required Mods\r\necho \"## Downloading BepInEx Plugins...\"\r\nmkdir -p $HOME\/temp\r\ncd $HOME\/temp\r\nfor i in ${!BEPINEX_PLUGINS[@]}; do\r\n    TS_ASSET=$(curl --silent \"https:\/\/dsp.thunderstore.io\/api\/experimental\/package\/${BEPINEX_PLUGINS[$i]}\/\")\r\n    TS_ASSET_VERSION=$(echo $TS_ASSET | jq .latest.version_number | sed 's\/\"\/\/g')\r\n    TS_ASSET_NAME=$(echo $TS_ASSET | jq .name | sed 's\/\"\/\/g')\r\n    TS_DL_URL=$(echo $TS_ASSET | jq .latest.download_url | sed 's\/\"\/\/g')\r\n    echo \"## Attempting to download $TS_ASSET_NAME v$TS_ASSET_VERSION from Thunderstore.io\"\r\n    curl -L $TS_DL_URL --output \"$TS_ASSET_NAME.zip\" 2> \/dev\/null\r\n    \r\n    echo \"## Extracting $TS_ASSET_NAME.zip\"\r\n    mkdir -p \"$HOME\/temp\/$TS_ASSET_NAME\"\r\n    unzip -o \".\/$TS_ASSET_NAME.zip\" -d \"$HOME\/temp\/$TS_ASSET_NAME\" > \/dev\/null\r\n    rm -fR \".\/$TS_ASSET_NAME.zip\"\r\n    \r\n    # Check for a \"plugins\" or \"patchers\" sub directory.\r\n    CWD=\"$HOME\/temp\/$TS_ASSET_NAME\"\r\n    echo \"##  -> Installing\"\r\n    if [ -d \"$CWD\/plugins\" ]\r\n    then\r\n        mkdir -p \"$HOME\/BepInEx\/plugins\/$TS_ASSET_NAME\"\r\n        cp -fr $CWD\/plugins\/* \"$HOME\/BepInEx\/plugins\/$TS_ASSET_NAME\/\"\r\n    else\r\n        cp -fr $CWD $HOME\/BepInEx\/plugins\r\n    fi\r\n    \r\n    if [ -d \"$CWD\/patchers\" ]\r\n    then\r\n        echo \"##  -> Installing Patcher\"\r\n        mkdir -p \"$HOME\/BepInEx\/patchers\/$TS_ASSET_NAME\"\r\n        cp -fr $CWD\/patchers\/* \"$HOME\/BepInEx\/patchers\/$TS_ASSET_NAME\/\"\r\n    fi\r\n    \r\n    echo \"##  -> Done\"\r\ndone\r\n\r\nrm -rf $HOME\/temp",
+            "script": "#!\/bin\/bash\r\n# Installation Script\r\n# Created by AlienX\r\n## Define variables\r\nexport HOME=\/mnt\/server\r\nBEPINEX_PLUGINS=(\"nebula\/NebulaMultiplayerMod\" \"nebula\/NebulaMultiplayerModApi\" \"PhantomGamers\/IlLine\" \"CommonAPI\/CommonAPI\" \"starfi5h\/BulletTime\" \"xiaoye97\/LDBTool\" \"CommonAPI\/DSPModSave\")\r\n\r\nif [[ ! -z \"$ADDITIONAL_PLUGINS\" ]]\r\nthen\r\n    read -a tmpArray <<< $ADDITIONAL_PLUGINS\r\n    BEPINEX_PLUGINS=(\"${BEPINEX_PLUGINS[@]}\" \"${tmpArray[@]}\")\r\nfi\r\n\r\ntmpMsg=\"\"\r\nfor i in ${!BEPINEX_PLUGINS[@]}; do\r\n    tmpMsg+=\"${BEPINEX_PLUGINS[$i]},\"\r\ndone\r\n\r\necho \"Will download the following plugins: $tmpMsg\"\r\n\r\n## download and install steamcmd\r\ncd \/tmp\r\nmkdir -p $HOME\/steamcmd\r\ncurl -sSL -o steamcmd.tar.gz https:\/\/steamcdn-a.akamaihd.net\/client\/installer\/steamcmd_linux.tar.gz\r\ntar -xzvf steamcmd.tar.gz -C $HOME\/steamcmd\r\nmkdir -p $HOME\/steamapps # Fix steamcmd disk write error when this folder is missing\r\ncd $HOME\/steamcmd\r\n\r\n# SteamCMD fails otherwise for some reason, even running as root.\r\n# This is changed at the end of the install process anyways.\r\nchown -R root:root \/mnt\r\n\r\n## install game using steamcmd\r\n.\/steamcmd.sh +force_install_dir $HOME +login ${STEAM_USER} ${STEAM_PASS} ${STEAM_AUTH} +@sSteamCmdForcePlatformType windows +app_update ${SRCDS_APPID} validate +quit\r\n\r\n## set up 32 bit libraries\r\nmkdir -p $HOME\/.steam\/sdk32\r\ncp -v linux32\/steamclient.so ..\/.steam\/sdk32\/steamclient.so\r\n\r\n## set up 64 bit libraries\r\nmkdir -p $HOME\/.steam\/sdk64\r\ncp -v linux64\/steamclient.so ..\/.steam\/sdk64\/steamclient.so\r\ncd $HOME\r\n\r\n## Install Goldberg Steam Emu\r\necho \"## Installing Goldberg Steam Emu\"\r\nrm -f $HOME\/DSPGAME_Data\/Plugins\/steam_api64.dll\r\ncurl -L \"https:\/\/gitlab.com\/Mr_Goldberg\/goldberg_emulator\/-\/jobs\/2987292049\/artifacts\/raw\/steam_api64.dll\" --output \"$HOME\/DSPGAME_Data\/Plugins\/steam_api64.dll\" 2> \/dev\/null\r\necho \"##  -> Applying Settings\"\r\nmkdir -p $HOME\/DSPGAME_Data\/Plugins\/steam_settings\r\ntouch $HOME\/DSPGAME_Data\/Plugins\/steam_settings\/disable_networking.txt\r\necho \"1366540\" > $HOME\/DSPGAME_Data\/Plugins\/steam_appid.txt\r\necho \"##  -> Done\"\r\n\r\n## Install BepInEx from GitHub\r\nLATEST_JSON=$(curl --silent \"https:\/\/api.github.com\/repos\/BepInEx\/BepInEx\/releases\/latest\")\r\nDOWNLOAD_LINK=$(echo ${LATEST_JSON} | jq .assets | jq -r .[].browser_download_url | grep -i x64)\r\nFILE_NAME=$(echo \"${DOWNLOAD_LINK##*\/}\")\r\necho \"## Attempting to download BepInEx from $DOWNLOAD_LINK\"\r\ncurl -OL $DOWNLOAD_LINK > \/dev\/null\r\necho \"## Installing BepInEx\"\r\nunzip -o \".\/$FILE_NAME\" > \/dev\/null\r\necho \"##   -> Done\"\r\nrm -fR $FILE_NAME\r\nmkdir -p $HOME\/BepInEx\/plugins\r\nmkdir -p $HOME\/BepInEx\/patchers\r\n\r\n#Download Required Mods\r\necho \"## Downloading BepInEx Plugins...\"\r\nmkdir -p $HOME\/temp\r\ncd $HOME\/temp\r\nfor i in ${!BEPINEX_PLUGINS[@]}; do\r\n    TS_ASSET=$(curl --silent \"https:\/\/dsp.thunderstore.io\/api\/experimental\/package\/${BEPINEX_PLUGINS[$i]}\/\")\r\n    TS_ASSET_VERSION=$(echo $TS_ASSET | jq .latest.version_number | sed 's\/\"\/\/g')\r\n    TS_ASSET_NAME=$(echo $TS_ASSET | jq .name | sed 's\/\"\/\/g')\r\n    TS_DL_URL=$(echo $TS_ASSET | jq .latest.download_url | sed 's\/\"\/\/g')\r\n    echo \"## Attempting to download $TS_ASSET_NAME v$TS_ASSET_VERSION from Thunderstore.io\"\r\n    curl -L $TS_DL_URL --output \"$TS_ASSET_NAME.zip\" 2> \/dev\/null\r\n    \r\n    echo \"## Extracting $TS_ASSET_NAME.zip\"\r\n    mkdir -p \"$HOME\/temp\/$TS_ASSET_NAME\"\r\n    unzip -o \".\/$TS_ASSET_NAME.zip\" -d \"$HOME\/temp\/$TS_ASSET_NAME\" > \/dev\/null\r\n    rm -fR \".\/$TS_ASSET_NAME.zip\"\r\n    \r\n    # Check for a \"plugins\" or \"patchers\" sub directory.\r\n    CWD=\"$HOME\/temp\/$TS_ASSET_NAME\"\r\n    echo \"##  -> Installing\"\r\n    if [ -d \"$CWD\/plugins\" ]\r\n    then\r\n        mkdir -p \"$HOME\/BepInEx\/plugins\/$TS_ASSET_NAME\"\r\n        cp -fr $CWD\/plugins\/* \"$HOME\/BepInEx\/plugins\/$TS_ASSET_NAME\/\"\r\n    else\r\n        cp -fr $CWD $HOME\/BepInEx\/plugins\r\n    fi\r\n    \r\n    if [ -d \"$CWD\/patchers\" ]\r\n    then\r\n        echo \"##  -> Installing Patcher\"\r\n        mkdir -p \"$HOME\/BepInEx\/patchers\/$TS_ASSET_NAME\"\r\n        cp -fr $CWD\/patchers\/* \"$HOME\/BepInEx\/patchers\/$TS_ASSET_NAME\/\"\r\n    fi\r\n    \r\n    echo \"##  -> Done\"\r\ndone\r\n\r\necho \"1366540\" > $HOME\/steam_appid.txt\r\nmkdir -p $HOME\/Dyson\\ Sphere\\ Program\/Achievement\r\nmkdir -p $HOME\/Dyson\\ Sphere\\ Program\/Blueprint\r\nmkdir -p $HOME\/Dyson\\ Sphere\\ Program\/Save\r\n\r\nrm -rf $HOME\/temp\r\n\r\necho \"## INSTALL COMPLETE\"",
             "container": "ghcr.io\/parkervcp\/installers:debian",
             "entrypoint": "bash"
         }
@@ -34,7 +33,7 @@
             "description": "SteaCMD Game App ID for Download",
             "env_variable": "SRCDS_APPID",
             "default_value": "1366540",
-            "user_viewable": false,
+            "user_viewable": true,
             "user_editable": false,
             "rules": "required|numeric|digits_between:1,7",
             "field_type": "text"
@@ -44,8 +43,8 @@
             "description": "Steam Username to download the game",
             "env_variable": "STEAM_USER",
             "default_value": "",
-            "user_viewable": false,
-            "user_editable": false,
+            "user_viewable": true,
+            "user_editable": true,
             "rules": "required|string|max:30",
             "field_type": "text"
         },
@@ -54,9 +53,9 @@
             "description": "Your steam usernames password to download the game",
             "env_variable": "STEAM_PASS",
             "default_value": "",
-            "user_viewable": false,
-            "user_editable": false,
-            "rules": "required|string|max:30",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|password|max:30",
             "field_type": "text"
         },
         {
@@ -64,7 +63,7 @@
             "description": "",
             "env_variable": "WINETRICKS_RUN",
             "default_value": "vcrun2013 vcrun2017 corefonts dotnet48",
-            "user_viewable": false,
+            "user_viewable": true,
             "user_editable": false,
             "rules": "required|string",
             "field_type": "text"
@@ -84,9 +83,19 @@
             "description": "Auto Update the game server files every time the server is started.\r\nWarning: You'll need to ensure Steam Guard is disabled for this to work, not recommended.  Only toggle this when you need to update.",
             "env_variable": "AUTO_UPDATE",
             "default_value": "0",
-            "user_viewable": false,
-            "user_editable": false,
+            "user_viewable": true,
+            "user_editable": true,
             "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "Additional Thunderstore Plugins",
+            "description": "A space separated list of additional plugins to install.  For example if you wanted to also install Galactic Scale and Reverse Belt Direction you would use \"Galactic_Scale\/GalacticScale GreyHak\/DSP_Belt_Reverse_Direction\".\r\n\r\nThis value is obtained via the URL of the modpage in the form of Author\/PluginName",
+            "env_variable": "ADDITIONAL_PLUGINS",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:256",
             "field_type": "text"
         }
     ]
