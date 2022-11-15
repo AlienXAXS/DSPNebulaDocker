@@ -7,13 +7,9 @@ I am no way a Docker expert or know how to use Wine. I cobbled together this scr
 1. You first need to import the egg into your Pter Install using the Nests area
 2. Install a new server using the new egg you have just imported
 3. Wait for the server setup to complete, this can take a long time.
-4. Start the server once, then stop it so it creates the Dyson Sphere Program directory
-5. Upload your saves to the "Dyson Sphere Program" folder
+4. Upload your saves to the "Dyson Sphere Program" folder
+5. Modify the nebula.cfg files HostPort setting to the port that Pter gave you.
 6. Start the server
-
-It should look like this:
-
-![image](https://user-images.githubusercontent.com/1773445/201533782-3f4792a8-e614-45fb-9803-11f237bb40df.png)
 
 # Things I've Tested:
 - Saving/Loading works
